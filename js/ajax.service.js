@@ -29,6 +29,7 @@ function getGenres(onSuccess) {
     const url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`
     getData(url, response => {
         if (response && Array.isArray(response.genres)) {
+            saveToStorage(genres_key, response.genres)
             onSuccess(response.genres)
         } else {
             console.error('Invalid response from getGenres:', response)
@@ -61,5 +62,11 @@ function prepareData({ results }) {
 
 function getGenreById(id) {
     const genres = loadFromStorage(genres_key)
+
+    if (!genres) {
+        console.error('Genres data not found in local storage.')
+        return null
+    }
+
     return genres.find(g => g.id === id)
 }
